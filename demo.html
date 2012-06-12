@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<!--
+	By Alan Reid - http://www.alanreid.com.ar
+	Source: https://github.com/alanreid/BuenosAiresTraffic.js
+	-->
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>BuenosAiresTraffic.js Demo</title>
+	
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script type="text/javascript" src="signData.js"></script>
+	<script type="text/javascript" src="BuenosAiresTraffic.js"></script>
+	
+	<style type="text/css">
+	body { font-family:"Lucida Console"; background-color:#333 }
+	h1 { font-family:Verdana; color:#FFF; text-align:center; border-bottom:1px solid #FFF; padding-bottom:10px }
+	.signs { float:left; clear:left; width:100% }
+	.signs .sign { float:left; height:130px; margin:0 15px 15px 0; padding:8px; background-color:#222; color:#00FF00; box-shadow:0 0 10px #000; border-radius:7px }
+	.signs .sign:hover { background-color:#2a2a2a }
+	.signs .sign h3 { margin:0; border-bottom:1px solid #CCC; padding-bottom:10px; font-size:12pt; color:#FFF }
+	.signs .sign p { font-size:8pt }
+	</style>
+
+</head>
+<body>
+	<h1>Carteles de tránsito de la Ciudad de Buenos Aires</h1>
+	<div id="signs"></div>
+
+	<script type="text/javascript">
+		var traffic = new TrafficStatus("status.php", signData); 
+
+		traffic.getTrafficSigns(function(signs) {
+		    showSigns(signs);
+		});
+
+		// Updates the traffic data every 10 secs
+		setInterval(function() {
+			traffic.getTrafficSigns(function(signs) {
+			    showSigns(signs);
+			});
+		}, 10000);
+
+		// Formats the sign list into nice HTML and 
+		var showSigns = function(signs) {
+		    var html = '<div class="signs">';
+
+		    for(var key in signs) {
+		        html += '<div class="sign">';
+		        html += '<h3>' + signs[key].name + '</h3>';
+
+		        for(var i = 0; i < signs[key].messages.length; i++) {
+		            html += '<p>' + signs[key].messages[i].replace('\n', '<br />') + '</p>';
+		        }
+		        
+		        html += '</div>';
+		    }
+
+		    html += '</div>';
+
+		    $('#signs').html(html);
+		};
+	</script>
+</body>
+</html>
